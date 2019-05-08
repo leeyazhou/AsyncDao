@@ -7,10 +7,11 @@
     <groupId>com.github.twogoods</groupId>
     <artifactId>asyncDao</artifactId>
     <packaging>pom</packaging>
-    <version>0.1</version>
+    <version>0.2-SNATSHOT</version>
     <modules>
         <module>asyncdao-core</module>
         <module>asyncdao-spring</module>
+        <module>asyncdao-example</module>
     </modules>
 
     <properties>

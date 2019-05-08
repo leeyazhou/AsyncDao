@@ -5,8 +5,8 @@ async:
      username: root
      host: 10.100.216.147
      port: 3306
-     password: root
-     database: UJ9FeAm3Yc@#E%IH8dLj6guyr5K&u#J3
+     password: UJ9FeAm3Yc@#E%IH8dLj6guyr5K&u#J3
+     database: test
      maxTotal: 12
      maxIdle: 12
      minIdle: 1

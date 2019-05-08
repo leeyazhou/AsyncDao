@@ -23,9 +23,9 @@ public class Application {
 		userSearch.setMaxAge(28);
 		userSearch.setMinAge(8);
 		userSearch.setLimit(5);
-
+		System.out.println("查询数据库： " + userSearch);
 		commonDao.query(userSearch, users -> {
-			System.out.println("result: " + users);
+			System.out.println("查询结果result: " + users);
 		});
 
 	}

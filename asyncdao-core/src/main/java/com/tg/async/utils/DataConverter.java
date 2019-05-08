@@ -10,6 +10,7 @@ import com.tg.async.mysql.ScalaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
+import scala.collection.IterableLike;
 import scala.collection.Iterator;
 import scala.runtime.AbstractFunction1;
 
@@ -25,14 +26,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DataConverter {
 	private static final Logger log = LoggerFactory.getLogger(DataConverter.class);
-	private static Map<Class, Map<String, PropertyDescriptor>> classesWithProperty = new ConcurrentHashMap<>();
+	private static Map<Class<?>, Map<String, PropertyDescriptor>> classesWithProperty = new ConcurrentHashMap<>();
 
 	public static <T> List<T> queryResultToListObject(QueryResult queryResult, Class<T> clazz, ModelMap resultMap) {
 		final Option<ResultSet> rows = queryResult.rows();
 		java.util.List<T> list = new ArrayList<T>();
 		if (rows.isDefined()) {
 			List<String> columnNames = ScalaUtils.toJavaList(rows.get().columnNames().toList());
-			rows.get().foreach(new AbstractFunction1<RowData, Void>() {
+			((IterableLike<RowData, ?>) rows.get()).foreach(new AbstractFunction1<RowData, Void>() {
 				@Override
 				public Void apply(RowData row) {
 					try {
@@ -118,7 +119,7 @@ public class DataConverter {
 		return t;
 	}
 
-	private static void setProperty(Class clazz, Object object, String property, Object value) {
+	private static void setProperty(Class<?> clazz, Object object, String property, Object value) {
 		Map<String, PropertyDescriptor> properties = classesWithProperty.get(clazz);
 		if (properties == null) {
 			synchronized (clazz) {
@@ -140,7 +141,7 @@ public class DataConverter {
 		}
 	}
 
-	private static Map<String, PropertyDescriptor> initpropertyDescriptors(Class clazz) {
+	private static Map<String, PropertyDescriptor> initpropertyDescriptors(Class<?> clazz) {
 		Map<String, PropertyDescriptor> map = new HashMap<>();
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {

@@ -1,22 +1,30 @@
 package com.tg.async.test;
 
-import com.github.mauricio.async.db.*;
+import java.nio.charset.Charset;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+
+import com.github.mauricio.async.db.Configuration;
+import com.github.mauricio.async.db.Connection;
+import com.github.mauricio.async.db.QueryResult;
+import com.github.mauricio.async.db.RowData;
+import com.github.mauricio.async.db.SSLConfiguration;
 import com.github.mauricio.async.db.mysql.MySQLConnection;
 import com.github.mauricio.async.db.mysql.MySQLQueryResult;
 import com.github.mauricio.async.db.mysql.util.CharsetMapper;
 import com.tg.async.mysql.ScalaUtils;
 import com.tg.async.mysql.VertxEventLoopExecutionContext;
+
 import io.netty.buffer.PooledByteBufAllocator;
 import io.vertx.core.Vertx;
-import org.junit.Test;
 import scala.Option;
+import scala.collection.IterableLike;
 import scala.collection.Map$;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import scala.runtime.AbstractFunction1;
-import java.nio.charset.Charset;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by twogoods on 2018/4/12.
@@ -53,20 +61,21 @@ public class BaseSqlTest {
 					System.out.println("insert id: " + ((MySQLQueryResult) queryResult).lastInsertId());
 
 					System.out.println(queryResult.rows().get().columnNames().toList());
-					queryResult.rows().get().foreach(new AbstractFunction1<RowData, Void>() {
-						@Override
-						public Void apply(RowData row) {
-							row.foreach(new AbstractFunction1<Object, Void>() {
+					((IterableLike<RowData, ?>) queryResult.rows().get())
+							.foreach(new AbstractFunction1<RowData, Void>() {
 								@Override
-								public Void apply(Object value) {
-									System.out.println("value" + value);
+								public Void apply(RowData row) {
+									((IterableLike<Object, ?>) row).foreach(new AbstractFunction1<Object, Void>() {
+										@Override
+										public Void apply(Object value) {
+											System.out.println("value" + value);
+											return null;
+										}
+									});
+									latch.countDown();
 									return null;
 								}
 							});
-							latch.countDown();
-							return null;
-						}
-					});
 				} else {
 					ar.cause().printStackTrace();
 				}
