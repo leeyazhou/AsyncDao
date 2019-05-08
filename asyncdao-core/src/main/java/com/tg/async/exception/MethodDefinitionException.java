@@ -4,6 +4,11 @@ package com.tg.async.exception;
  * Created by twogoods on 2018/4/12.
  */
 public class MethodDefinitionException extends RuntimeException {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public MethodDefinitionException() {
 	}
 

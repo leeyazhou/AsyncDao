@@ -17,20 +17,20 @@ import java.util.stream.Collectors;
 @Data
 @ToString
 public class MapperMethod {
-	private Class iface;
+	private Class<?> iface;
 	private Method method;
 	private String name;
 	private List<String> paramName;
 
-	private Class wrapper;
-	private Class primary;
+	private Class<?> wrapper;
+	private Class<?> primary;
 
 	private boolean returnsMany = false;
 	private boolean returnsMap = false;
 	private boolean returnsVoid = false;
 	private boolean returnsSingle = false;
 
-	public MapperMethod(Class iface, Method method) {
+	public MapperMethod(Class<?> iface, Method method) {
 		this.iface = iface;
 		this.method = method;
 		name = buildName(iface, method);
@@ -55,7 +55,7 @@ public class MapperMethod {
 					wrapper = ArrayList.class;
 					Type dataType = ((ParameterizedType) handlerWrapperType).getActualTypeArguments()[0];
 					if (dataType instanceof Class) {
-						primary = (Class) dataType;
+						primary = (Class<?>) dataType;
 					} else {
 						throw new UnsupportTypeException(String.format("not support type : %s", dataContinerType));
 					}
@@ -72,7 +72,7 @@ public class MapperMethod {
 					returnsMap = true;
 					return;
 				}
-				primary = (Class) handlerWrapperType;
+				primary = (Class<?>) handlerWrapperType;
 				if (primary.equals(Void.class)) {
 					returnsVoid = true;
 				} else {
@@ -87,7 +87,7 @@ public class MapperMethod {
 				.collect(Collectors.toList());
 	}
 
-	private String buildName(Class iface, Method method) {
+	private String buildName(Class<?> iface, Method method) {
 		return iface.getName() + "." + method.getName();
 	}
 

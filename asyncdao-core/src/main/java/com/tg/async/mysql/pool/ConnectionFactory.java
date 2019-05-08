@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * Created by twogoods on 2018/4/8.
  */
 public class ConnectionFactory extends BasePooledObjectFactory<Connection> {
-	private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
+	protected static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 	protected final Configuration configuration;
 	protected final Vertx vertx;
 

@@ -11,7 +11,7 @@ public class DynamicContext {
 
 	private Object parameterObject;
 
-	private Map<String, Object> bindParam = new HashMap();
+	private Map<String, Object> bindParam = new HashMap<>();
 
 	public DynamicContext() {
 	}

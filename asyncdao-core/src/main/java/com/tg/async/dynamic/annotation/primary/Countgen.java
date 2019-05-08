@@ -41,4 +41,8 @@ public class Countgen extends AbstractSqlGen {
 	public String sqlType() {
 		return "select";
 	}
+
+	public Count getCount() {
+		return count;
+	}
 }

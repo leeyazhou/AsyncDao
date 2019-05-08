@@ -24,6 +24,7 @@ public class ExpressionEvaluator {
 		return value != null;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static Iterable<?> evaluateIterable(String expression, Object parameterObject) {
 		Object value = OgnlCache.getValue(expression, parameterObject);
 		if (value == null) {

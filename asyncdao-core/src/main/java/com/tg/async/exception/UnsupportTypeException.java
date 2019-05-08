@@ -5,6 +5,11 @@ package com.tg.async.exception;
  */
 public class UnsupportTypeException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public UnsupportTypeException() {
 	}
 
