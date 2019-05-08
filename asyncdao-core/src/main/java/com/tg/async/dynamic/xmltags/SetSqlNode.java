@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class SetSqlNode extends TrimSqlNode {
 
-    private static List<String> suffixList = Arrays.asList(",");
+	private static List<String> suffixList = Arrays.asList(",");
 
-    public SetSqlNode(SqlNode contents) {
-        super(contents, "SET", null, null, suffixList);
-    }
+	public SetSqlNode(SqlNode contents) {
+		super(contents, "SET", null, null, suffixList);
+	}
 }

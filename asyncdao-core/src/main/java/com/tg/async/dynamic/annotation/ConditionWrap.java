@@ -11,20 +11,15 @@ import lombok.Data;
 @Builder
 @Data
 public class ConditionWrap {
-    private Criterions criterion;
-    private String field;
-    private String column;
-    private Attach attach;
-    private String test;
-    private String ognlParam;
+	private Criterions criterion;
+	private String field;
+	private String column;
+	private Attach attach;
+	private String test;
+	private String ognlParam;
 
-    public static ConditionWrap empty(String paramName) {
-        return ConditionWrap.builder()
-                .attach(Attach.AND)
-                .column(paramName)
-                .criterion(Criterions.EQUAL)
-                .field(paramName)
-                .ognlParam(paramName)
-                .build();
-    }
+	public static ConditionWrap empty(String paramName) {
+		return ConditionWrap.builder().attach(Attach.AND).column(paramName).criterion(Criterions.EQUAL).field(paramName)
+				.ognlParam(paramName).build();
+	}
 }

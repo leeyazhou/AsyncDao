@@ -16,37 +16,34 @@ import org.slf4j.LoggerFactory;
  * Created by twogoods on 2018/4/8.
  */
 public class ConnectionFactory extends BasePooledObjectFactory<Connection> {
-    private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
-    protected final Configuration configuration;
-    protected final Vertx vertx;
+	private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
+	protected final Configuration configuration;
+	protected final Vertx vertx;
 
-    public ConnectionFactory(Configuration configuration, Vertx vertx) {
-        this.configuration = configuration;
-        this.vertx = vertx;
-    }
+	public ConnectionFactory(Configuration configuration, Vertx vertx) {
+		this.configuration = configuration;
+		this.vertx = vertx;
+	}
 
-    @Override
-    public Connection create() throws Exception {
-        Connection connection = new MySQLConnection(configuration,
-                CharsetMapper.Instance(),
-                vertx.nettyEventLoopGroup().next(),
-                VertxEventLoopExecutionContext.create(vertx));
-        return connection;
-    }
+	@Override
+	public Connection create() throws Exception {
+		Connection connection = new MySQLConnection(configuration, CharsetMapper.Instance(),
+				vertx.nettyEventLoopGroup().next(), VertxEventLoopExecutionContext.create(vertx));
+		return connection;
+	}
 
-    @Override
-    public PooledObject<Connection> wrap(Connection connection) {
-        return new DefaultPooledObject<>(connection);
-    }
+	@Override
+	public PooledObject<Connection> wrap(Connection connection) {
+		return new DefaultPooledObject<>(connection);
+	}
 
+	@Override
+	public void destroyObject(PooledObject<Connection> p) throws Exception {
+		p.getObject().disconnect();
+	}
 
-    @Override
-    public void destroyObject(PooledObject<Connection> p) throws Exception {
-        p.getObject().disconnect();
-    }
-
-    @Override
-    public boolean validateObject(PooledObject<Connection> p) {
-        return p.getObject().isConnected();
-    }
+	@Override
+	public boolean validateObject(PooledObject<Connection> p) {
+		return p.getObject().isConnected();
+	}
 }

@@ -18,53 +18,54 @@ import scala.concurrent.ExecutionContext;
  */
 public class ConnectionPool {
 
-    private GenericObjectPool<Connection> pool;
-    private final Vertx vertx;
-    private long borrowMaxWaitMillis;
-    private ExecutionContext executionContext;
+	private GenericObjectPool<Connection> pool;
+	private final Vertx vertx;
+	private long borrowMaxWaitMillis;
+	private ExecutionContext executionContext;
 
-    public ConnectionPool(PoolConfiguration configuration, Vertx vertx) {
-        this.vertx = vertx;
-        this.executionContext = VertxEventLoopExecutionContext.create(vertx);
-        this.borrowMaxWaitMillis = configuration.getBorrowMaxWaitMillis();
-        GenericObjectPoolConfig config = new GenericObjectPoolConfig();
-        config.setMaxTotal(configuration.getMaxTotal());
-        config.setMaxIdle(configuration.getMaxIdle());
-        config.setMinIdle(configuration.getMinIdle());
-        config.setMaxWaitMillis(0);
-        pool = new GenericObjectPool<>(new ConnectionFactory(configuration.getConfig(), vertx), config);
-        try {
-            pool.preparePool();
-        } catch (Exception e) {
-            throw new RuntimeException("{init connectionpool error: {}}", e);
-        }
-    }
+	public ConnectionPool(PoolConfiguration configuration, Vertx vertx) {
+		this.vertx = vertx;
+		this.executionContext = VertxEventLoopExecutionContext.create(vertx);
+		this.borrowMaxWaitMillis = configuration.getBorrowMaxWaitMillis();
+		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+		config.setMaxTotal(configuration.getMaxTotal());
+		config.setMaxIdle(configuration.getMaxIdle());
+		config.setMinIdle(configuration.getMinIdle());
+		config.setMaxWaitMillis(0);
+		pool = new GenericObjectPool<>(new ConnectionFactory(configuration.getConfig(), vertx), config);
+		try {
+			pool.preparePool();
+		} catch (Exception e) {
+			throw new RuntimeException("{init connectionpool error: {}}", e);
+		}
+	}
 
-    public void close() {
-        pool.close();
-    }
+	public void close() {
+		pool.close();
+	}
 
-    public void getConnection(Handler<AsyncResult<SQLConnection>> handler) {
-        Connection connection = null;
-        try {
-            connection = pool.borrowObject(borrowMaxWaitMillis);
-        } catch (Exception e) {
-            handler.handle(Future.failedFuture(e));
-        }
-        if (connection.isConnected()) {
-            handler.handle(Future.succeededFuture(new AsyncSQLConnectionImpl(connection, this, executionContext)));
-        } else {
-            connection.connect().onComplete(ScalaUtils.toFunction1(asyncResult -> {
-                if (asyncResult.failed()) {
-                    handler.handle(Future.failedFuture(asyncResult.cause()));
-                } else {
-                    handler.handle(Future.succeededFuture(new AsyncSQLConnectionImpl(asyncResult.result(), this, executionContext)));
-                }
-            }), executionContext);
-        }
-    }
+	public void getConnection(Handler<AsyncResult<SQLConnection>> handler) {
+		Connection connection = null;
+		try {
+			connection = pool.borrowObject(borrowMaxWaitMillis);
+		} catch (Exception e) {
+			handler.handle(Future.failedFuture(e));
+		}
+		if (connection.isConnected()) {
+			handler.handle(Future.succeededFuture(new AsyncSQLConnectionImpl(connection, this, executionContext)));
+		} else {
+			connection.connect().onComplete(ScalaUtils.toFunction1(asyncResult -> {
+				if (asyncResult.failed()) {
+					handler.handle(Future.failedFuture(asyncResult.cause()));
+				} else {
+					handler.handle(Future
+							.succeededFuture(new AsyncSQLConnectionImpl(asyncResult.result(), this, executionContext)));
+				}
+			}), executionContext);
+		}
+	}
 
-    public void returnObject(Connection connection) {
-        pool.returnObject(connection);
-    }
+	public void returnObject(Connection connection) {
+		pool.returnObject(connection);
+	}
 }

@@ -14,47 +14,46 @@ import java.util.Arrays;
  * Created by twogoods on 2018/5/6.
  */
 public abstract class AbstractSqlGen implements SqlGen {
-    protected Method method;
-    protected ModelMap modelMap;
-    protected AbstractSectionSqlGen abstractWhereSqlGen;
-    protected AbstractSectionSqlGen abstractSuffixSqlGen;
+	protected Method method;
+	protected ModelMap modelMap;
+	protected AbstractSectionSqlGen abstractWhereSqlGen;
+	protected AbstractSectionSqlGen abstractSuffixSqlGen;
 
-    protected static final String testTemplate = "%s.%s != null";
+	protected static final String testTemplate = "%s.%s != null";
 
-    public AbstractSqlGen(Method method, ModelMap modelMap) {
-        this.method = method;
-        this.modelMap = modelMap;
-    }
+	public AbstractSqlGen(Method method, ModelMap modelMap) {
+		this.method = method;
+		this.modelMap = modelMap;
+	}
 
-    protected abstract SqlNode generateBaseSql();
+	protected abstract SqlNode generateBaseSql();
 
-    protected SqlNode generateWhereSql() {
-        if (abstractWhereSqlGen == null) {
-            return new StaticTextSqlNode("");
-        }
-        return abstractWhereSqlGen.generateSql();
-    }
+	protected SqlNode generateWhereSql() {
+		if (abstractWhereSqlGen == null) {
+			return new StaticTextSqlNode("");
+		}
+		return abstractWhereSqlGen.generateSql();
+	}
 
-    protected SqlNode generateSuffixSql() {
-        if (abstractSuffixSqlGen == null) {
-            return new StaticTextSqlNode("");
-        }
-        return abstractSuffixSqlGen.generateSql();
-    }
+	protected SqlNode generateSuffixSql() {
+		if (abstractSuffixSqlGen == null) {
+			return new StaticTextSqlNode("");
+		}
+		return abstractSuffixSqlGen.generateSql();
+	}
 
-    @Override
-    public MappedStatement generate() {
-        MixedSqlNode rootSqlNode = new MixedSqlNode(Arrays.asList(generateBaseSql(), generateWhereSql(), generateSuffixSql()));
-        MappedStatement mappedStatement = new MappedStatement.Builder(buildKey(), new DynamicSqlSource(rootSqlNode), sqlType())
-                .resultType(modelMap.getType())
-                .build();
-        return mappedStatement;
-    }
+	@Override
+	public MappedStatement generate() {
+		MixedSqlNode rootSqlNode = new MixedSqlNode(
+				Arrays.asList(generateBaseSql(), generateWhereSql(), generateSuffixSql()));
+		MappedStatement mappedStatement = new MappedStatement.Builder(buildKey(), new DynamicSqlSource(rootSqlNode),
+				sqlType()).resultType(modelMap.getType()).build();
+		return mappedStatement;
+	}
 
+	public abstract String sqlType();
 
-    public abstract String sqlType();
-
-    protected String buildKey() {
-        return method.getClass().getName() + "." + method.getName();
-    }
+	protected String buildKey() {
+		return method.getClass().getName() + "." + method.getName();
+	}
 }

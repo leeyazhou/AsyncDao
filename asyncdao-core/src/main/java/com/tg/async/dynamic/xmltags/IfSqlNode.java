@@ -5,21 +5,20 @@ package com.tg.async.dynamic.xmltags;
  */
 public class IfSqlNode implements SqlNode {
 
-    private final String test;
-    private final SqlNode contents;
+	private final String test;
+	private final SqlNode contents;
 
-    public IfSqlNode(SqlNode contents, String test) {
-        this.test = test;
-        this.contents = contents;
-    }
+	public IfSqlNode(SqlNode contents, String test) {
+		this.test = test;
+		this.contents = contents;
+	}
 
-
-    @Override
-    public boolean apply(DynamicContext dynamicContext) {
-        if (ExpressionEvaluator.evaluateBoolean(test, dynamicContext.getParam())) {
-            contents.apply(dynamicContext);
-            return true;
-        }
-        return false;
-    }
+	@Override
+	public boolean apply(DynamicContext dynamicContext) {
+		if (ExpressionEvaluator.evaluateBoolean(test, dynamicContext.getParam())) {
+			contents.apply(dynamicContext);
+			return true;
+		}
+		return false;
+	}
 }

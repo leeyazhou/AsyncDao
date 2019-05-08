@@ -17,30 +17,30 @@ import java.lang.reflect.Method;
  * Created by twogoods on 2018/5/6.
  */
 public class SelectGen extends AbstractSqlGen {
-    private Select select;
+	private Select select;
 
-    public SelectGen(Method method, Select select, ModelMap modelMap) {
-        super(method, modelMap);
-        this.select = select;
-        ModelConditions modelConditions = method.getAnnotation(ModelConditions.class);
-        if (modelConditions != null) {
-            this.abstractWhereSqlGen = new ModelWhereSqlGen(method, modelMap, modelConditions, select.sqlMode());
-            this.abstractSuffixSqlGen = new ModelSuffixGen(method, modelMap, select.sqlMode());
-        } else {
-            this.abstractWhereSqlGen = new FlatParamWhereSqlGen(method, modelMap, select.sqlMode());
-            this.abstractSuffixSqlGen = new ParamSuffixGen(method, modelMap, select.sqlMode());
-        }
-    }
+	public SelectGen(Method method, Select select, ModelMap modelMap) {
+		super(method, modelMap);
+		this.select = select;
+		ModelConditions modelConditions = method.getAnnotation(ModelConditions.class);
+		if (modelConditions != null) {
+			this.abstractWhereSqlGen = new ModelWhereSqlGen(method, modelMap, modelConditions, select.sqlMode());
+			this.abstractSuffixSqlGen = new ModelSuffixGen(method, modelMap, select.sqlMode());
+		} else {
+			this.abstractWhereSqlGen = new FlatParamWhereSqlGen(method, modelMap, select.sqlMode());
+			this.abstractSuffixSqlGen = new ParamSuffixGen(method, modelMap, select.sqlMode());
+		}
+	}
 
-    @Override
-    public SqlNode generateBaseSql() {
-        String column = StringUtils.isEmpty(select.columns()) ? "*" : select.columns();
-        String data = String.format("select %s from %s ", column, modelMap.getTable());
-        return new StaticTextSqlNode(data);
-    }
+	@Override
+	public SqlNode generateBaseSql() {
+		String column = StringUtils.isEmpty(select.columns()) ? "*" : select.columns();
+		String data = String.format("select %s from %s ", column, modelMap.getTable());
+		return new StaticTextSqlNode(data);
+	}
 
-    @Override
-    public String sqlType() {
-        return "select";
-    }
+	@Override
+	public String sqlType() {
+		return "select";
+	}
 }

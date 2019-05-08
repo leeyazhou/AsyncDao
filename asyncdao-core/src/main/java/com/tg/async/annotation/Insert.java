@@ -8,12 +8,12 @@ import java.lang.annotation.Target;
 /**
  * Created by twogoods on 2018/4/12.
  */
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Insert {
-    String columns() default "";
+	String columns() default "";
 
-    boolean useGeneratedKeys() default false;
+	boolean useGeneratedKeys() default false;
 
-    String keyProperty() default "";
+	String keyProperty() default "";
 }

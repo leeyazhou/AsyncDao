@@ -9,25 +9,25 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = AsyncDaoConfig.CONF_PREFIX)
 public class AsyncDaoConfig {
-    public static final String CONF_PREFIX = "async.dao";
+	public static final String CONF_PREFIX = "async.dao";
 
-    private String mapperLocations;
+	private String mapperLocations;
 
-    private String basePackages;
+	private String basePackages;
 
-    private String username;
+	private String username;
 
-    private String host;
+	private String host;
 
-    private int port;
+	private int port;
 
-    private String password;
+	private String password;
 
-    private String database;
+	private String database;
 
-    private int maxTotal=12;
-    private int maxIdle=12;
-    private int minIdle=1;
-    private long maxWaitMillis=10000L;
+	private int maxTotal = 12;
+	private int maxIdle = 12;
+	private int minIdle = 1;
+	private long maxWaitMillis = 10000L;
 
 }

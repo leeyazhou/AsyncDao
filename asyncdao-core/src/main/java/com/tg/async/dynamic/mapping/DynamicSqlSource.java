@@ -12,45 +12,46 @@ import java.util.Map;
  */
 public class DynamicSqlSource implements SqlSource {
 
-    private final SqlNode rootSqlNode;
+	private final SqlNode rootSqlNode;
 
-    public DynamicSqlSource(SqlNode rootSqlNode) {
-        this.rootSqlNode = rootSqlNode;
-    }
+	public DynamicSqlSource(SqlNode rootSqlNode) {
+		this.rootSqlNode = rootSqlNode;
+	}
 
-    @Override
-    public BoundSql getBoundSql(Object parameterObject) {
-        DynamicContext dynamicContext = new DynamicContext(parameterObject);
-        rootSqlNode.apply(dynamicContext);
-        ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler(parameterObject, dynamicContext.getBindParam());
-        GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
-        String sql = parser.parse(dynamicContext.getSql());
-        return new BoundSql(sql, handler.getRealParameters());
-    }
+	@Override
+	public BoundSql getBoundSql(Object parameterObject) {
+		DynamicContext dynamicContext = new DynamicContext(parameterObject);
+		rootSqlNode.apply(dynamicContext);
+		ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler(parameterObject,
+				dynamicContext.getBindParam());
+		GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
+		String sql = parser.parse(dynamicContext.getSql());
+		return new BoundSql(sql, handler.getRealParameters());
+	}
 
-    private static class ParameterMappingTokenHandler implements TokenHandler {
-        private Object param;
-        private Map<String, Object> additionalParameters;
-        private List<Object> realParameters = new ArrayList<>();
+	private static class ParameterMappingTokenHandler implements TokenHandler {
+		private Object param;
+		private Map<String, Object> additionalParameters;
+		private List<Object> realParameters = new ArrayList<>();
 
-        public ParameterMappingTokenHandler(Object param, Map<String, Object> additionalParameters) {
-            this.param = param;
-            this.additionalParameters = additionalParameters;
-        }
+		public ParameterMappingTokenHandler(Object param, Map<String, Object> additionalParameters) {
+			this.param = param;
+			this.additionalParameters = additionalParameters;
+		}
 
-        @Override
-        public String handleToken(String content) {
-            if (content.startsWith(ForEachSqlNode.ITEM_PREFIX)) {
-                realParameters.add(OgnlCache.getValue(content, additionalParameters));
-            } else {
-                realParameters.add(OgnlCache.getValue(content, param));
-            }
-            return "?";
-        }
+		@Override
+		public String handleToken(String content) {
+			if (content.startsWith(ForEachSqlNode.ITEM_PREFIX)) {
+				realParameters.add(OgnlCache.getValue(content, additionalParameters));
+			} else {
+				realParameters.add(OgnlCache.getValue(content, param));
+			}
+			return "?";
+		}
 
-        public List<Object> getRealParameters() {
-            return realParameters;
-        }
-    }
+		public List<Object> getRealParameters() {
+			return realParameters;
+		}
+	}
 
 }

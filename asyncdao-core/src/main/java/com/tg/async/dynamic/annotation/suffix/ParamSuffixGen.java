@@ -19,37 +19,35 @@ import java.util.Optional;
  */
 public class ParamSuffixGen extends AbstractSectionSqlGen {
 
-    public ParamSuffixGen(Method method, ModelMap modelMap, SqlMode sqlMode) {
-        super(method, modelMap, sqlMode);
-    }
+	public ParamSuffixGen(Method method, ModelMap modelMap, SqlMode sqlMode) {
+		super(method, modelMap, sqlMode);
+	}
 
-    @Override
-    public SqlNode generateSql() {
-        SqlNode orderNode = generateOrder();
-        Optional<Parameter> limit = Arrays.asList(method.getParameters()).stream()
-                .filter(parameter -> parameter.isAnnotationPresent(Limit.class))
-                .findFirst();
+	@Override
+	public SqlNode generateSql() {
+		SqlNode orderNode = generateOrder();
+		Optional<Parameter> limit = Arrays.asList(method.getParameters()).stream()
+				.filter(parameter -> parameter.isAnnotationPresent(Limit.class)).findFirst();
 
-        Optional<Parameter> offset = Arrays.asList(method.getParameters()).stream()
-                .filter(parameter -> parameter.isAnnotationPresent(OffSet.class))
-                .findFirst();
+		Optional<Parameter> offset = Arrays.asList(method.getParameters()).stream()
+				.filter(parameter -> parameter.isAnnotationPresent(OffSet.class)).findFirst();
 
-        StringBuilder stringBuilder = new StringBuilder();
-        if (offset.isPresent() || offset.isPresent()) {
-            stringBuilder.append(" limit ");
-        }
-        offset.ifPresent(parameter -> {
-            stringBuilder.append("#{");
-            stringBuilder.append(parameter.getName());
-            stringBuilder.append("},");
-        });
+		StringBuilder stringBuilder = new StringBuilder();
+		if (offset.isPresent() || offset.isPresent()) {
+			stringBuilder.append(" limit ");
+		}
+		offset.ifPresent(parameter -> {
+			stringBuilder.append("#{");
+			stringBuilder.append(parameter.getName());
+			stringBuilder.append("},");
+		});
 
-        limit.ifPresent(parameter -> {
-            stringBuilder.append("#{");
-            stringBuilder.append(parameter.getName());
-            stringBuilder.append("}");
-        });
+		limit.ifPresent(parameter -> {
+			stringBuilder.append("#{");
+			stringBuilder.append(parameter.getName());
+			stringBuilder.append("}");
+		});
 
-        return new MixedSqlNode(Arrays.asList(orderNode, new StaticTextSqlNode(stringBuilder.toString())));
-    }
+		return new MixedSqlNode(Arrays.asList(orderNode, new StaticTextSqlNode(stringBuilder.toString())));
+	}
 }

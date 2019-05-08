@@ -11,121 +11,113 @@ import org.joda.time.LocalDateTime;
  */
 
 @Table(name = "T_User")
-    public class User {
-        @Id("id")
-        private Long id;
+public class User {
+	@Id("id")
+	private Long id;
 
-        private String username;
-        private String password;
-        private Integer age;
+	private String username;
+	private String password;
+	private Integer age;
 
-        @Column("old_address")
-        private String oldAddress;
-        @Column("now_address")
-        private String nowAddress;
+	@Column("old_address")
+	private String oldAddress;
+	@Column("now_address")
+	private String nowAddress;
 
-        private Byte state;
+	private Byte state;
 
-        @Column("created_at")
-        private LocalDateTime createdAt;
-        @Column("updated_at")
-        private LocalDateTime updatedAt;
+	@Column("created_at")
+	private LocalDateTime createdAt;
+	@Column("updated_at")
+	private LocalDateTime updatedAt;
 
-        @Ignore
-        private String remrk;
+	@Ignore
+	private String remrk;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getOldAddress() {
-        return oldAddress;
-    }
+	public String getOldAddress() {
+		return oldAddress;
+	}
 
-    public void setOldAddress(String oldAddress) {
-        this.oldAddress = oldAddress;
-    }
+	public void setOldAddress(String oldAddress) {
+		this.oldAddress = oldAddress;
+	}
 
-    public String getNowAddress() {
-        return nowAddress;
-    }
+	public String getNowAddress() {
+		return nowAddress;
+	}
 
-    public void setNowAddress(String nowAddress) {
-        this.nowAddress = nowAddress;
-    }
+	public void setNowAddress(String nowAddress) {
+		this.nowAddress = nowAddress;
+	}
 
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 
-    public Integer getAge() {
-        return age;
-    }
+	public Integer getAge() {
+		return age;
+	}
 
-    public Byte getState() {
-        return state;
-    }
+	public Byte getState() {
+		return state;
+	}
 
-    public void setState(Byte state) {
-        this.state = state;
-    }
+	public void setState(Byte state) {
+		this.state = state;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 
-    public String getRemrk() {
-        return remrk;
-    }
+	public String getRemrk() {
+		return remrk;
+	}
 
-    public void setRemrk(String remrk) {
-        this.remrk = remrk;
-    }
+	public void setRemrk(String remrk) {
+		this.remrk = remrk;
+	}
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", age=" + age +
-                ", oldAddress='" + oldAddress + '\'' +
-                ", nowAddress='" + nowAddress + '\'' +
-                ", state=" + state +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "User{" + "id=" + id + ", username='" + username + '\'' + ", password='" + password + '\'' + ", age="
+				+ age + ", oldAddress='" + oldAddress + '\'' + ", nowAddress='" + nowAddress + '\'' + ", state=" + state
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+	}
 }

@@ -14,55 +14,45 @@ import java.util.Map;
 @Sql(User.class)
 public interface CommonDao {
 
-    /**
-     * 1. api 改异步模式，对象映射
-     * 2. 注解形式表达动态sql
-     * 3. 无法简单表达的sql可以手写
-     * 4. 事务实现，编程式和声明式实现
-     * <p>
-     * 参考：dbutils mybatis ognl
-     */
-    @Select()
-    @OrderBy("id desc")
-    @Page(offsetField = "offset", limitField = "limit")
-    @ModelConditions({
-            @ModelCondition(field = "username", criterion = Criterions.EQUAL),
-            @ModelCondition(field = "maxAge", column = "age", criterion = Criterions.LESS),
-            @ModelCondition(field = "minAge", column = "age", criterion = Criterions.GREATER)
-    })
-    void query(UserSearch userSearch, DataHandler<List<User>> handler);
+	/**
+	 * 1. api 改异步模式，对象映射 2. 注解形式表达动态sql 3. 无法简单表达的sql可以手写 4. 事务实现，编程式和声明式实现
+	 * <p>
+	 * 参考：dbutils mybatis ognl
+	 */
+	@Select()
+	@OrderBy("id desc")
+	@Page(offsetField = "offset", limitField = "limit")
+	@ModelConditions({ @ModelCondition(field = "username", criterion = Criterions.EQUAL),
+			@ModelCondition(field = "maxAge", column = "age", criterion = Criterions.LESS),
+			@ModelCondition(field = "minAge", column = "age", criterion = Criterions.GREATER) })
+	void query(UserSearch userSearch, DataHandler<List<User>> handler);
 
+	@Select()
+	@OrderBy("id desc")
+	void queryParam(@Condition String username, @Condition(criterion = Criterions.GREATER) Integer age,
+			@OffSet int offset, @Limit int limit, DataHandler<List<User>> handler);
 
-    @Select()
-    @OrderBy("id desc")
-    void queryParam(@Condition String username,
-                    @Condition(criterion = Criterions.GREATER) Integer age,
-                    @OffSet int offset,
-                    @Limit int limit,
-                    DataHandler<List<User>> handler);
+	@Select(columns = "username,age", sqlMode = SqlMode.COMMON)
+	void queryList(@Condition(criterion = Criterions.IN, column = "id") int[] ids, DataHandler<List<User>> handler);
 
+	void querySingle(User user, DataHandler<User> handler);
 
-    @Select(columns = "username,age", sqlMode = SqlMode.COMMON)
-    void queryList(@Condition(criterion = Criterions.IN, column = "id") int[] ids, DataHandler<List<User>> handler);
+	void querySingleMap(User user, DataHandler<Map> handler);
 
-    void querySingle(User user, DataHandler<User> handler);
+	@Select(columns = "id")
+	void querySingleColumn(DataHandler<List<Long>> handler);
 
-    void querySingleMap(User user, DataHandler<Map> handler);
+	@Count
+	void count(DataHandler<Long> handler);
 
-    @Select(columns = "id")
-    void querySingleColumn(DataHandler<List<Long>> handler);
+	@Insert(useGeneratedKeys = true, keyProperty = "id")
+	void insert(User user, DataHandler<Long> handler);
 
-    @Count
-    void count(DataHandler<Long> handler);
+	@Update
+	@ModelConditions(@ModelCondition(field = "id"))
+	void update(User user, DataHandler<Long> handler);
 
-    @Insert(useGeneratedKeys = true, keyProperty = "id")
-    void insert(User user, DataHandler<Long> handler);
-
-    @Update
-    @ModelConditions(@ModelCondition(field = "id"))
-    void update(User user, DataHandler<Long> handler);
-
-    @Delete
-    @ModelConditions(@ModelCondition(field = "id"))
-    void delete(User user, DataHandler<Long> handler);
+	@Delete
+	@ModelConditions(@ModelCondition(field = "id"))
+	void delete(User user, DataHandler<Long> handler);
 }

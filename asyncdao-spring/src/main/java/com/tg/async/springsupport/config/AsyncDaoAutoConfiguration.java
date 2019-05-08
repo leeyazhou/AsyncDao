@@ -14,19 +14,20 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(AsyncDaoConfig.class)
 public class AsyncDaoAutoConfiguration {
 
-    private final AsyncDaoConfig asyncDaoConfig;
+	private final AsyncDaoConfig asyncDaoConfig;
 
-    public AsyncDaoAutoConfiguration(AsyncDaoConfig asyncDaoConfig) {
-        this.asyncDaoConfig = asyncDaoConfig;
-    }
+	public AsyncDaoAutoConfiguration(AsyncDaoConfig asyncDaoConfig) {
+		this.asyncDaoConfig = asyncDaoConfig;
+	}
 
-    @Bean
-    public AsyncDaoFactory asyncDaoFactory() throws Exception {
-        AsyncConfig asyncConfig = new AsyncConfig();
-        PoolConfiguration configuration = new PoolConfiguration(asyncDaoConfig.getUsername(), asyncDaoConfig.getHost(), asyncDaoConfig.getPort(), asyncDaoConfig.getPassword(), asyncDaoConfig.getDatabase());
-        asyncConfig.setPoolConfiguration(configuration);
-        asyncConfig.setMapperPackages(asyncDaoConfig.getBasePackages());
-        asyncConfig.setXmlLocations(asyncDaoConfig.getMapperLocations());
-        return AsyncDaoFactory.build(asyncConfig);
-    }
+	@Bean
+	public AsyncDaoFactory asyncDaoFactory() throws Exception {
+		AsyncConfig asyncConfig = new AsyncConfig();
+		PoolConfiguration configuration = new PoolConfiguration(asyncDaoConfig.getUsername(), asyncDaoConfig.getHost(),
+				asyncDaoConfig.getPort(), asyncDaoConfig.getPassword(), asyncDaoConfig.getDatabase());
+		asyncConfig.setPoolConfiguration(configuration);
+		asyncConfig.setMapperPackages(asyncDaoConfig.getBasePackages());
+		asyncConfig.setXmlLocations(asyncDaoConfig.getMapperLocations());
+		return AsyncDaoFactory.build(asyncConfig);
+	}
 }

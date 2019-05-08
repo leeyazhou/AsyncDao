@@ -11,14 +11,14 @@ import java.lang.annotation.Target;
 /**
  * Created by twogoods on 2018/4/12.
  */
-@Target({ElementType.PARAMETER})
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Condition {
-    Criterions criterion() default Criterions.EQUAL;
+	Criterions criterion() default Criterions.EQUAL;
 
-    String column() default "";
+	String column() default "";
 
-    Attach attach() default Attach.AND;
+	Attach attach() default Attach.AND;
 
-    String test() default "";
+	String test() default "";
 }

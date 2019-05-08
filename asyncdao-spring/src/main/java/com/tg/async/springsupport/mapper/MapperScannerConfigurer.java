@@ -18,28 +18,28 @@ import java.util.List;
  * Created by twogoods on 2018/8/27.
  */
 public class MapperScannerConfigurer implements BeanFactoryPostProcessor, ApplicationContextAware {
-    private static final Logger log = LoggerFactory.getLogger(MapperScannerConfigurer.class);
-    private ApplicationContext applicationContext;
+	private static final Logger log = LoggerFactory.getLogger(MapperScannerConfigurer.class);
+	private ApplicationContext applicationContext;
 
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        log.debug("Searching for mappers annotated with @Mapper");
-        ClassPathMapperScanner scanner = new ClassPathMapperScanner((BeanDefinitionRegistry) beanFactory);
-        try {
-            if (this.applicationContext != null) {
-                scanner.setResourceLoader(applicationContext);
-            }
-            List<String> packages = AutoConfigurationPackages.get(beanFactory);
-            scanner.setAnnotationClass(Mapper.class);
-            scanner.registerFilters();
-            scanner.doScan(StringUtils.toStringArray(packages));
-        } catch (IllegalStateException ex) {
-            log.debug("Could not determine auto-configuration package, automatic mapper scanning disabled.", ex);
-        }
-    }
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		log.debug("Searching for mappers annotated with @Mapper");
+		ClassPathMapperScanner scanner = new ClassPathMapperScanner((BeanDefinitionRegistry) beanFactory);
+		try {
+			if (this.applicationContext != null) {
+				scanner.setResourceLoader(applicationContext);
+			}
+			List<String> packages = AutoConfigurationPackages.get(beanFactory);
+			scanner.setAnnotationClass(Mapper.class);
+			scanner.registerFilters();
+			scanner.doScan(StringUtils.toStringArray(packages));
+		} catch (IllegalStateException ex) {
+			log.debug("Could not determine auto-configuration package, automatic mapper scanning disabled.", ex);
+		}
+	}
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 }

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({AsyncDaoAutoConfiguration.class, AutoConfiguredMapperScannerRegistrar.class})
+@Import({ AsyncDaoAutoConfiguration.class, AutoConfiguredMapperScannerRegistrar.class })
 @Documented
 public @interface EnableAsyncDao {
 }

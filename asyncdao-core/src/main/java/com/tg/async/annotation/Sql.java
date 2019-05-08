@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 /**
  * Created by twogoods on 2018/5/6.
  */
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Sql {
-    Class<?> value();
+	Class<?> value();
 }

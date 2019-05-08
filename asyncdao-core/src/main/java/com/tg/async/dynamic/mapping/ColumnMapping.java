@@ -1,6 +1,5 @@
 package com.tg.async.dynamic.mapping;
 
-
 import lombok.Data;
 
 /**
@@ -8,14 +7,14 @@ import lombok.Data;
  */
 @Data
 public class ColumnMapping {
-    private String column;
-    private String property;
+	private String column;
+	private String property;
 
-    public ColumnMapping() {
-    }
+	public ColumnMapping() {
+	}
 
-    public ColumnMapping(String column, String property) {
-        this.column = column;
-        this.property = property;
-    }
+	public ColumnMapping(String column, String property) {
+		this.column = column;
+		this.property = property;
+	}
 }

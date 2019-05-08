@@ -9,14 +9,14 @@ import java.util.List;
  */
 @Data
 public class BoundSql {
-    private String sql;
-    private List<Object> parameters;
+	private String sql;
+	private List<Object> parameters;
 
-    public BoundSql() {
-    }
+	public BoundSql() {
+	}
 
-    public BoundSql(String sql, List<Object> parameters) {
-        this.sql = sql;
-        this.parameters = parameters;
-    }
+	public BoundSql(String sql, List<Object> parameters) {
+		this.sql = sql;
+		this.parameters = parameters;
+	}
 }

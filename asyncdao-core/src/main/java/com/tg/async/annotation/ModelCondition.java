@@ -12,19 +12,19 @@ import java.lang.annotation.Target;
 /**
  * Created by twogoods on 2018/4/12.
  */
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ModelCondition {
-    Criterions criterion() default Criterions.EQUAL;
+	Criterions criterion() default Criterions.EQUAL;
 
-    String field();
+	String field();
 
-    String column() default "";
+	String column() default "";
 
-    Attach attach() default Attach.AND;
+	Attach attach() default Attach.AND;
 
-    String test() default "";
+	String test() default "";
 
-    //in 查询时设置
-    InType paramType() default InType.COLLECTION;
+	// in 查询时设置
+	InType paramType() default InType.COLLECTION;
 }

@@ -16,28 +16,28 @@ import java.lang.reflect.Method;
  */
 public class DeleteGen extends AbstractSqlGen {
 
-    private Delete delete;
+	private Delete delete;
 
-    public DeleteGen(Method method, ModelMap modelMap, Delete delete) {
-        super(method, modelMap);
-        this.delete = delete;
+	public DeleteGen(Method method, ModelMap modelMap, Delete delete) {
+		super(method, modelMap);
+		this.delete = delete;
 
-        ModelConditions modelConditions = method.getAnnotation(ModelConditions.class);
-        if (modelConditions != null) {
-            this.abstractWhereSqlGen = new ModelWhereSqlGen(method, modelMap, modelConditions, delete.sqlMode());
-        } else {
-            this.abstractWhereSqlGen = new FlatParamWhereSqlGen(method, modelMap, delete.sqlMode());
-        }
+		ModelConditions modelConditions = method.getAnnotation(ModelConditions.class);
+		if (modelConditions != null) {
+			this.abstractWhereSqlGen = new ModelWhereSqlGen(method, modelMap, modelConditions, delete.sqlMode());
+		} else {
+			this.abstractWhereSqlGen = new FlatParamWhereSqlGen(method, modelMap, delete.sqlMode());
+		}
 
-    }
+	}
 
-    @Override
-    public SqlNode generateBaseSql() {
-        return new StaticTextSqlNode("delete from " + modelMap.getTable());
-    }
+	@Override
+	public SqlNode generateBaseSql() {
+		return new StaticTextSqlNode("delete from " + modelMap.getTable());
+	}
 
-    @Override
-    public String sqlType() {
-        return "delete";
-    }
+	@Override
+	public String sqlType() {
+		return "delete";
+	}
 }

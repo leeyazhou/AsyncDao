@@ -16,32 +16,28 @@ import java.util.Arrays;
  * Created by twogoods on 2018/5/17.
  */
 public class ModelSuffixGen extends AbstractSectionSqlGen {
-    private String paramName;
-    private final String offset = " #{ %s.%s }, ";
-    private final String limit = " #{ %s.%s } ";
-    private final String ifCondition = " %s.%s != null ";
+	private String paramName;
+	private final String offset = " #{ %s.%s }, ";
+	private final String limit = " #{ %s.%s } ";
+	private final String ifCondition = " %s.%s != null ";
 
-    public ModelSuffixGen(Method method, ModelMap modelMap, SqlMode sqlMode) {
-        super(method, modelMap, sqlMode);
-        paramName = method.getParameters()[0].getName();
-    }
+	public ModelSuffixGen(Method method, ModelMap modelMap, SqlMode sqlMode) {
+		super(method, modelMap, sqlMode);
+		paramName = method.getParameters()[0].getName();
+	}
 
-    @Override
-    public SqlNode generateSql() {
-        SqlNode orderNode = generateOrder();
+	@Override
+	public SqlNode generateSql() {
+		SqlNode orderNode = generateOrder();
 
-        Page page = method.getAnnotation(Page.class);
-        if (page == null) {
-            return orderNode;
-        }
+		Page page = method.getAnnotation(Page.class);
+		if (page == null) {
+			return orderNode;
+		}
 
-        SqlNode offsetNode = new IfSqlNode(new StaticTextSqlNode(String.format(offset, paramName, page.offsetField())),
-                String.format(ifCondition, paramName, page.offsetField()));
-        return new MixedSqlNode(Arrays.asList(
-                orderNode,
-                new StaticTextSqlNode("limit"),
-                offsetNode,
-                new StaticTextSqlNode(String.format(limit, paramName, page.limitField()))
-        ));
-    }
+		SqlNode offsetNode = new IfSqlNode(new StaticTextSqlNode(String.format(offset, paramName, page.offsetField())),
+				String.format(ifCondition, paramName, page.offsetField()));
+		return new MixedSqlNode(Arrays.asList(orderNode, new StaticTextSqlNode("limit"), offsetNode,
+				new StaticTextSqlNode(String.format(limit, paramName, page.limitField()))));
+	}
 }

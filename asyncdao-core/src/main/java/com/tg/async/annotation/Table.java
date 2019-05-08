@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 /**
  * Created by twogoods on 2018/4/12.
  */
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Table {
-    String name();
+	String name();
 }

@@ -8,17 +8,17 @@ import io.vertx.core.Handler;
 /**
  * Created by twogoods on 2018/8/23.
  */
-public class TranslationMapperProxy extends MapperProxy{
+public class TranslationMapperProxy extends MapperProxy {
 
-    private SQLConnection connection;
+	private SQLConnection connection;
 
-    public TranslationMapperProxy(Configuration configuration, Class mapperInterface, SQLConnection connection) {
-        super(configuration, mapperInterface);
-        this.connection = connection;
-    }
+	public TranslationMapperProxy(Configuration configuration, Class mapperInterface, SQLConnection connection) {
+		super(configuration, mapperInterface);
+		this.connection = connection;
+	}
 
-    @Override
-    protected void getConnection(Handler handler) {
-        handler.handle(Future.succeededFuture(connection));
-    }
+	@Override
+	protected void getConnection(Handler handler) {
+		handler.handle(Future.succeededFuture(connection));
+	}
 }

@@ -10,9 +10,10 @@ import org.junit.Test;
  */
 public class XmlText {
 
-    @Test
-    public void test() throws Exception {
-        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(new Configuration(), ResourceScanner.getResourceAsStream("mapper/CommonDaoMapper.xml"), "mapper/CommonDaoMapper.xml");
-        xmlMapperBuilder.build();
-    }
+	@Test
+	public void test() throws Exception {
+		XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(new Configuration(),
+				ResourceScanner.getResourceAsStream("mapper/CommonDaoMapper.xml"), "mapper/CommonDaoMapper.xml");
+		xmlMapperBuilder.build();
+	}
 }

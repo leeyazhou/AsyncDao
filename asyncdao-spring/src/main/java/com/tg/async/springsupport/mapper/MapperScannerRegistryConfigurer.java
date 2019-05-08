@@ -17,34 +17,35 @@ import java.util.List;
  * Created by twogoods on 2018/8/28.
  */
 public class MapperScannerRegistryConfigurer implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
-    private static final Logger log = LoggerFactory.getLogger(MapperScannerRegistryConfigurer.class);
-    private ApplicationContext applicationContext;
+	private static final Logger log = LoggerFactory.getLogger(MapperScannerRegistryConfigurer.class);
+	private ApplicationContext applicationContext;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 
-    @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
-        log.debug("Searching for mappers annotated with @Mapper");
+	@Override
+	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
+		log.debug("Searching for mappers annotated with @Mapper");
 
-        ClassPathMapperScanner scanner = new ClassPathMapperScanner(beanDefinitionRegistry);
-        try {
-            if (this.applicationContext != null) {
-                scanner.setResourceLoader(this.applicationContext);
-            }
-            List<String> packages = AutoConfigurationPackages.get(this.applicationContext);
-            scanner.setAnnotationClass(Mapper.class);
-            scanner.registerFilters();
-            scanner.doScan(StringUtils.toStringArray(packages));
-        } catch (IllegalStateException ex) {
-            log.debug("Could not determine auto-configuration package, automatic mapper scanning disabled.", ex);
-        }
-    }
+		ClassPathMapperScanner scanner = new ClassPathMapperScanner(beanDefinitionRegistry);
+		try {
+			if (this.applicationContext != null) {
+				scanner.setResourceLoader(this.applicationContext);
+			}
+			List<String> packages = AutoConfigurationPackages.get(this.applicationContext);
+			scanner.setAnnotationClass(Mapper.class);
+			scanner.registerFilters();
+			scanner.doScan(StringUtils.toStringArray(packages));
+		} catch (IllegalStateException ex) {
+			log.debug("Could not determine auto-configuration package, automatic mapper scanning disabled.", ex);
+		}
+	}
 
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory)
+			throws BeansException {
 
-    }
+	}
 }

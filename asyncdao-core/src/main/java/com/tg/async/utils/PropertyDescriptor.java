@@ -15,46 +15,47 @@ import static java.util.Locale.ENGLISH;
  * Created by twogoods on 2018/5/2.
  */
 public class PropertyDescriptor {
-    private static final Logger log = LoggerFactory.getLogger(MapperLoader.class);
-    private Class clazz;
-    private String name;
-    private Class type;
-    private Method setter;
+	private static final Logger log = LoggerFactory.getLogger(MapperLoader.class);
+	private Class clazz;
+	private String name;
+	private Class type;
+	private Method setter;
 
-    public PropertyDescriptor(Class clazz, String name) {
-        this.clazz = clazz;
-        this.name = name;
-        try {
-            type = clazz.getDeclaredField(name).getType();
-            setter = clazz.getDeclaredMethod(getSetterName(), type);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public PropertyDescriptor(Class clazz, String name) {
+		this.clazz = clazz;
+		this.name = name;
+		try {
+			type = clazz.getDeclaredField(name).getType();
+			setter = clazz.getDeclaredMethod(getSetterName(), type);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void setValue(Object object, Object value) throws Exception {
-        try {
-            setter.invoke(object, new Object[]{value});
-        } catch (IllegalArgumentException e) {
-            log.error("field {} is {},but data is {}, check class definition in {}", name, type, value.getClass(), clazz.getName());
-        }
-    }
+	public void setValue(Object object, Object value) throws Exception {
+		try {
+			setter.invoke(object, new Object[] { value });
+		} catch (IllegalArgumentException e) {
+			log.error("field {} is {},but data is {}, check class definition in {}", name, type, value.getClass(),
+					clazz.getName());
+		}
+	}
 
-    //TODO mysql类型与返回参数类型,先按异步驱动自己的规定
-    private Object convertValue(Object value) {
-        if (value.getClass().equals(LocalDateTime.class)) {
-            return Timestamp.valueOf((LocalDateTime) value);
-        }
-        if (value.getClass().equals(LocalDate.class)) {
-            return ((LocalDate) value).toDate();
-        }
-        return value;
-    }
+	// TODO mysql类型与返回参数类型,先按异步驱动自己的规定
+	private Object convertValue(Object value) {
+		if (value.getClass().equals(LocalDateTime.class)) {
+			return Timestamp.valueOf((LocalDateTime) value);
+		}
+		if (value.getClass().equals(LocalDate.class)) {
+			return ((LocalDate) value).toDate();
+		}
+		return value;
+	}
 
-    private String getSetterName() {
-        if (name == null || name.length() == 0) {
-            return name;
-        }
-        return "set" + name.substring(0, 1).toUpperCase(ENGLISH) + name.substring(1);
-    }
+	private String getSetterName() {
+		if (name == null || name.length() == 0) {
+			return name;
+		}
+		return "set" + name.substring(0, 1).toUpperCase(ENGLISH) + name.substring(1);
+	}
 }

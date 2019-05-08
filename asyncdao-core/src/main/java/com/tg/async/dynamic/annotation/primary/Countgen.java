@@ -17,29 +17,28 @@ import java.lang.reflect.Method;
  * Created by twogoods on 2018/5/17.
  */
 public class Countgen extends AbstractSqlGen {
-    private Count count;
+	private Count count;
 
-    public Countgen(Method method, ModelMap modelMap, Count count) {
-        super(method, modelMap);
-        this.count = count;
-        ModelConditions modelConditions = method.getAnnotation(ModelConditions.class);
-        if (modelConditions != null) {
-            this.abstractWhereSqlGen = new ModelWhereSqlGen(method, modelMap, modelConditions, count.sqlMode());
-            this.abstractSuffixSqlGen = new ModelSuffixGen(method, modelMap, count.sqlMode());
-        } else {
-            this.abstractWhereSqlGen = new FlatParamWhereSqlGen(method, modelMap, count.sqlMode());
-            this.abstractSuffixSqlGen = new ParamSuffixGen(method, modelMap, count.sqlMode());
-        }
-    }
+	public Countgen(Method method, ModelMap modelMap, Count count) {
+		super(method, modelMap);
+		this.count = count;
+		ModelConditions modelConditions = method.getAnnotation(ModelConditions.class);
+		if (modelConditions != null) {
+			this.abstractWhereSqlGen = new ModelWhereSqlGen(method, modelMap, modelConditions, count.sqlMode());
+			this.abstractSuffixSqlGen = new ModelSuffixGen(method, modelMap, count.sqlMode());
+		} else {
+			this.abstractWhereSqlGen = new FlatParamWhereSqlGen(method, modelMap, count.sqlMode());
+			this.abstractSuffixSqlGen = new ParamSuffixGen(method, modelMap, count.sqlMode());
+		}
+	}
 
+	@Override
+	protected SqlNode generateBaseSql() {
+		return new StaticTextSqlNode("select count(*) from " + modelMap.getTable() + " ");
+	}
 
-    @Override
-    protected SqlNode generateBaseSql() {
-        return new StaticTextSqlNode("select count(*) from " + modelMap.getTable() + " ");
-    }
-
-    @Override
-    public String sqlType() {
-        return "select";
-    }
+	@Override
+	public String sqlType() {
+		return "select";
+	}
 }

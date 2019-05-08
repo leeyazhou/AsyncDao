@@ -10,24 +10,25 @@ import java.lang.reflect.Proxy;
  */
 public class MapperProxyFactory<T> {
 
-    private Class<T> mapperInterface;
+	private Class<T> mapperInterface;
 
-    public MapperProxyFactory(Class<T> mapperInterface) {
-        this.mapperInterface = mapperInterface;
-    }
+	public MapperProxyFactory(Class<T> mapperInterface) {
+		this.mapperInterface = mapperInterface;
+	}
 
-    @SuppressWarnings("unchecked")
-    protected T newInstance(MapperProxy<T> mapperProxy) {
-        return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[]{mapperInterface}, mapperProxy);
-    }
+	@SuppressWarnings("unchecked")
+	protected T newInstance(MapperProxy<T> mapperProxy) {
+		return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface },
+				mapperProxy);
+	}
 
-    public T newInstance(Configuration configuration) {
-        final MapperProxy<T> mapperProxy = new MapperProxy<T>(configuration, mapperInterface);
-        return newInstance(mapperProxy);
-    }
+	public T newInstance(Configuration configuration) {
+		final MapperProxy<T> mapperProxy = new MapperProxy<T>(configuration, mapperInterface);
+		return newInstance(mapperProxy);
+	}
 
-    public T newInstance(Configuration configuration, SQLConnection connection) {
-        final MapperProxy<T> mapperProxy = new TranslationMapperProxy(configuration, mapperInterface, connection);
-        return newInstance(mapperProxy);
-    }
+	public T newInstance(Configuration configuration, SQLConnection connection) {
+		final MapperProxy<T> mapperProxy = new TranslationMapperProxy(configuration, mapperInterface, connection);
+		return newInstance(mapperProxy);
+	}
 }
