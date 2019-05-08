@@ -8,3 +8,6 @@
 /.idea/
 /*.iml
 *.iml
+.settings/
+.classpath
+.project
