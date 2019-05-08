@@ -1,23 +1,5 @@
 package com.tg.async.proxy;
 
-import com.github.mauricio.async.db.QueryResult;
-import com.github.mauricio.async.db.mysql.MySQLQueryResult;
-import com.tg.async.base.DataHandler;
-import com.tg.async.base.MapperMethod;
-import com.tg.async.dynamic.mapping.BoundSql;
-import com.tg.async.dynamic.mapping.MappedStatement;
-import com.tg.async.dynamic.mapping.ModelMap;
-import com.tg.async.dynamic.mapping.SqlType;
-import com.tg.async.mysql.Configuration;
-import com.tg.async.mysql.SQLConnection;
-import com.tg.async.utils.DataConverter;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
@@ -27,6 +9,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.mauricio.async.db.QueryResult;
+import com.tg.async.base.DataHandler;
+import com.tg.async.base.MapperMethod;
+import com.tg.async.dynamic.mapping.BoundSql;
+import com.tg.async.dynamic.mapping.MappedStatement;
+import com.tg.async.dynamic.mapping.ModelMap;
+import com.tg.async.dynamic.mapping.SqlType;
+import com.tg.async.mysql.Configuration;
+import com.tg.async.mysql.SQLConnection;
+import com.tg.async.proxy.handler.DeleteHandle;
+import com.tg.async.proxy.handler.SQLhandler;
+import com.tg.async.proxy.handler.InsertHandle;
+import com.tg.async.proxy.handler.SelectHandle;
+import com.tg.async.proxy.handler.UpdateHandle;
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+
 /**
  * Created by twogoods on 2018/4/12.
  */
@@ -35,13 +40,13 @@ public class MapperProxy<T> implements InvocationHandler {
 	private Configuration configuration;
 	private Class<T> mapperInterface;
 
-	private Map<SqlType, ExcuteSQLhandle> sqlHandle = new HashMap<>(4);
+	private Map<SqlType, SQLhandler> sqlHandle = new HashMap<>(4);
 
 	public MapperProxy(Configuration configuration, Class<T> mapperInterface) {
 		this.mapperInterface = mapperInterface;
 		this.configuration = configuration;
 
-		sqlHandle.put(SqlType.INSERT, new InsertHandle());
+		sqlHandle.put(SqlType.INSERT, new InsertHandle(configuration));
 		sqlHandle.put(SqlType.UPDATE, new UpdateHandle());
 		sqlHandle.put(SqlType.DELETE, new DeleteHandle());
 		sqlHandle.put(SqlType.SELECT, new SelectHandle());
@@ -58,130 +63,29 @@ public class MapperProxy<T> implements InvocationHandler {
 		MapperMethod mapperMethod = getMapperMethod(method);
 		MappedStatement mappedStatement = configuration.getMappedStatement(mapperMethod.getName());
 
-		DataHandler handler = null;
+		DataHandler<?> dataHandler = null;
 		if (args[args.length - 1] instanceof DataHandler) {
-			handler = (DataHandler) args[args.length - 1];
+			dataHandler = (DataHandler<?>) args[args.length - 1];
 		}
 		switch (mappedStatement.getSqlType()) {
 		case INSERT: {
-			execute(mapperMethod, mappedStatement, args, handler, sqlHandle.get(SqlType.INSERT));
+			execute(mapperMethod, mappedStatement, args, dataHandler, sqlHandle.get(SqlType.INSERT));
 			break;
 		}
 		case UPDATE: {
-			execute(mapperMethod, mappedStatement, args, handler, sqlHandle.get(SqlType.UPDATE));
+			execute(mapperMethod, mappedStatement, args, dataHandler, sqlHandle.get(SqlType.UPDATE));
 			break;
 		}
 		case DELETE: {
-			execute(mapperMethod, mappedStatement, args, handler, sqlHandle.get(SqlType.DELETE));
+			execute(mapperMethod, mappedStatement, args, dataHandler, sqlHandle.get(SqlType.DELETE));
 			break;
 		}
 		case SELECT: {
-			execute(mapperMethod, mappedStatement, args, handler, sqlHandle.get(SqlType.SELECT));
+			execute(mapperMethod, mappedStatement, args, dataHandler, sqlHandle.get(SqlType.SELECT));
 			break;
 		}
 		}
 		return null;
-	}
-
-	private interface ExcuteSQLhandle {
-		void handle(MapperMethod mapperMethod, QueryResult queryResult, ModelMap resultMap, DataHandler dataHandler);
-	}
-
-	private abstract class BaseSQLhandle implements ExcuteSQLhandle {
-		protected void handleReturnData(MapperMethod mapperMethod, DataHandler dataHandler, long count, boolean key) {
-			if (Integer.TYPE.equals(mapperMethod.getPrimary()) || Integer.class.equals(mapperMethod.getPrimary())) {
-				try {
-					dataHandler.handle(Integer.parseInt(Long.toString(count)));
-				} catch (NumberFormatException e) {
-					errorHandle(key, count);
-				}
-			} else if (Long.TYPE.equals(mapperMethod.getPrimary()) || Long.class.equals(mapperMethod.getPrimary())) {
-				dataHandler.handle(count);
-			} else if (Boolean.TYPE.equals(mapperMethod.getPrimary())
-					|| Boolean.class.equals(mapperMethod.getPrimary())) {
-				if (count > 0) {
-					dataHandler.handle(true);
-				} else {
-					dataHandler.handle(false);
-				}
-			} else {
-				dataHandler.handle(null);
-			}
-		}
-
-		protected abstract void errorHandle(boolean key, long count);
-	}
-
-	private class SelectHandle extends BaseSQLhandle {
-		@Override
-		public void handle(MapperMethod mapperMethod, QueryResult queryResult, ModelMap resultMap,
-				DataHandler dataHandler) {
-			if (mapperMethod.isReturnsMany()) {
-				List list = DataConverter.queryResultToListObject(queryResult, mapperMethod.getPrimary(), resultMap);
-				dataHandler.handle(list);
-			} else if (mapperMethod.isReturnsMap()) {
-				dataHandler.handle(DataConverter.queryResultToMap(queryResult, resultMap));
-			} else if (mapperMethod.isReturnsSingle()) {
-				dataHandler
-						.handle(DataConverter.queryResultToObject(queryResult, mapperMethod.getPrimary(), resultMap));
-			} else if (mapperMethod.isReturnsVoid()) {
-				dataHandler.handle(null);
-			}
-		}
-
-		@Override
-		protected void errorHandle(boolean key, long count) {
-		}
-	}
-
-	private class InsertHandle extends BaseSQLhandle {
-		@Override
-		public void handle(MapperMethod mapperMethod, QueryResult queryResult, ModelMap resultMap,
-				DataHandler dataHandler) {
-			MappedStatement mappedStatement = configuration.getMappedStatement(mapperMethod.getName());
-			if ("true".equals(mappedStatement.getUseGeneratedKeys())) {
-				long generatedKey = ((MySQLQueryResult) queryResult).lastInsertId();
-				handleReturnData(mapperMethod, dataHandler, generatedKey, true);
-			} else {
-				long rowsAffected = queryResult.rowsAffected();
-				handleReturnData(mapperMethod, dataHandler, rowsAffected, false);
-			}
-		}
-
-		@Override
-		protected void errorHandle(boolean key, long count) {
-			if (key) {
-				log.error("generatedKey is {}, can't convert int ,please change int to long in return type", count);
-			} else {
-				log.error("rowsAffected is {}, can't convert int ,please change int to long in return type", count);
-			}
-		}
-	}
-
-	private class UpdateHandle extends BaseSQLhandle {
-		@Override
-		public void handle(MapperMethod mapperMethod, QueryResult queryResult, ModelMap resultMap,
-				DataHandler dataHandler) {
-			handleReturnData(mapperMethod, dataHandler, queryResult.rowsAffected(), false);
-		}
-
-		@Override
-		protected void errorHandle(boolean key, long count) {
-			log.error("update row count is {}, can't convert int ,please change int to long in return type", count);
-		}
-	}
-
-	private class DeleteHandle extends BaseSQLhandle {
-		@Override
-		public void handle(MapperMethod mapperMethod, QueryResult queryResult, ModelMap resultMap,
-				DataHandler dataHandler) {
-			handleReturnData(mapperMethod, dataHandler, queryResult.rowsAffected(), false);
-		}
-
-		@Override
-		protected void errorHandle(boolean key, long count) {
-			log.error("delete row count is {}, can't convert int ,please change int to long in return type", count);
-		}
 	}
 
 	protected void getConnection(Handler<AsyncResult<SQLConnection>> handler) {
@@ -195,7 +99,7 @@ public class MapperProxy<T> implements InvocationHandler {
 	}
 
 	private void execute(MapperMethod mapperMethod, MappedStatement mappedStatement, Object[] args,
-			DataHandler dataHandler, ExcuteSQLhandle excuteSQLhandle) {
+			DataHandler<?> dataHandler, SQLhandler excuteSQLhandle) {
 		BoundSql boundSql = mappedStatement.getSqlSource().getBoundSql(convertArgs(mapperMethod, args));
 		getConnection(asyncConnection -> {
 			SQLConnection connection = asyncConnection.result();

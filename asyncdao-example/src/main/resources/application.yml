@@ -1,7 +1,7 @@
 async:
     dao:
      mapperLocations: /mapper
-     basePackages: com.tg.mapper
+     basePackages: com.tg.example.dao
      username: root
      host: 10.100.216.147
      port: 3306

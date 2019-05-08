@@ -28,7 +28,7 @@ public class IfaceParser {
 
 	public void parse(String className) {
 		try {
-			Class clazz = Class.forName(className);
+			Class<?> clazz = Class.forName(className);
 			if (!clazz.isInterface()) {
 				return;
 			}
@@ -47,7 +47,7 @@ public class IfaceParser {
 		}
 	}
 
-	private void parseModelMapping(Class clazz, String ifaceName) {
+	private void parseModelMapping(Class<?> clazz, String ifaceName) {
 		if (!clazz.isAnnotationPresent(Table.class)) {
 			throw new ParseException(
 					String.format("%s is not annotated @Table, but you use @sql() with this class", clazz.getName()));

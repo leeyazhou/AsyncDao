@@ -1,4 +1,4 @@
-package com.tg.mapper;
+package com.tg.example.dao;
 
 import com.tg.async.annotation.*;
 import com.tg.async.base.DataHandler;

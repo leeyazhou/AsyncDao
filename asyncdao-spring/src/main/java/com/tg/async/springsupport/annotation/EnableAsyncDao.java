@@ -1,10 +1,15 @@
 package com.tg.async.springsupport.annotation;
 
-import com.tg.async.springsupport.config.AsyncDaoAutoConfiguration;
-import com.tg.async.springsupport.mapper.AutoConfiguredMapperScannerRegistrar;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.springframework.context.annotation.Import;
 
-import java.lang.annotation.*;
+import com.tg.async.springsupport.config.AsyncDaoAutoConfiguration;
+import com.tg.async.springsupport.mapper.AutoConfiguredMapperScannerRegistrar;
 
 /**
  * Created by twogoods on 2018/8/27.

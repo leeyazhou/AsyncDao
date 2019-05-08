@@ -16,12 +16,12 @@ import static java.util.Locale.ENGLISH;
  */
 public class PropertyDescriptor {
 	private static final Logger log = LoggerFactory.getLogger(MapperLoader.class);
-	private Class clazz;
+	private Class<?> clazz;
 	private String name;
-	private Class type;
+	private Class<?> type;
 	private Method setter;
 
-	public PropertyDescriptor(Class clazz, String name) {
+	public PropertyDescriptor(Class<?> clazz, String name) {
 		this.clazz = clazz;
 		this.name = name;
 		try {
@@ -42,7 +42,7 @@ public class PropertyDescriptor {
 	}
 
 	// TODO mysql类型与返回参数类型,先按异步驱动自己的规定
-	private Object convertValue(Object value) {
+	protected Object convertValue(Object value) {
 		if (value.getClass().equals(LocalDateTime.class)) {
 			return Timestamp.valueOf((LocalDateTime) value);
 		}

@@ -1,8 +1,9 @@
-package com.tg;
+package com.tg.example;
 
 import com.tg.async.springsupport.annotation.EnableAsyncDao;
-import com.tg.mapper.CommonDao;
-import com.tg.mapper.UserSearch;
+import com.tg.example.dao.CommonDao;
+import com.tg.example.dao.UserSearch;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;

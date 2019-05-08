@@ -1,4 +1,4 @@
-package com.tg.mapper;
+package com.tg.example.dao;
 
 import java.util.List;
 

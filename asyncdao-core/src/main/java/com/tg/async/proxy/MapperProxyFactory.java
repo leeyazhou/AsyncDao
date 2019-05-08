@@ -28,7 +28,7 @@ public class MapperProxyFactory<T> {
 	}
 
 	public T newInstance(Configuration configuration, SQLConnection connection) {
-		final MapperProxy<T> mapperProxy = new TranslationMapperProxy(configuration, mapperInterface, connection);
+		final MapperProxy<T> mapperProxy = new TranslationMapperProxy<>(configuration, mapperInterface, connection);
 		return newInstance(mapperProxy);
 	}
 }
