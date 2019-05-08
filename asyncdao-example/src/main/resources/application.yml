@@ -3,10 +3,10 @@ async:
      mapperLocations: /mapper
      basePackages: com.tg.mapper
      username: root
-     host: localhost
+     host: 10.100.216.147
      port: 3306
-     password: admin
-     database: test
+     password: root
+     database: UJ9FeAm3Yc@#E%IH8dLj6guyr5K&u#J3
      maxTotal: 12
      maxIdle: 12
      minIdle: 1
