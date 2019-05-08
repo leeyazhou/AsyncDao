@@ -16,8 +16,8 @@
     <properties>
         <java.version>1.8</java.version>
         <java.encoding>UTF-8</java.encoding>
-        <scala.version>2.12.4</scala.version>
-        <vertx.version>3.5.0</vertx.version>
+        <scala.version>2.12.8</scala.version>
+        <vertx.version>3.6.3</vertx.version>
         <commomspool.version>2.4.2</commomspool.version>
         <asyncdriver.version>0.2.21</asyncdriver.version>
     </properties>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.21</version>
+            <version>1.7.25</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -52,6 +52,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.2</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
